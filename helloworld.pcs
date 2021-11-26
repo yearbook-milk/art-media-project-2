@@ -1,0 +1,24 @@
+import serialpreprocessor
+echo Test Program
+
+@ START
+constassign $ceiling<-2000
+varcopy $ceilingcopy<-$ceiling
+randomassign $variable<-0,$ceiling)
+mathassign $variable1<-$variable + 100
+
+echo $variable
+echo $variable1
+echo $ceiling
+
+if $variable1 > $variable [
+echo Var1 is greater than Var0
+jump BREAK
+endif ]
+
+jump START
+
+
+@ BREAK
+delay 300 ms
+exit Done.
