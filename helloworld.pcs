@@ -4,17 +4,21 @@ echo Test Program
 @ START
 constassign $ceiling<-2000
 varcopy $ceilingcopy<-$ceiling
-randomassign $variable<-0,$ceiling)
-mathassign $variable1<-$variable + 100
+inpassign $subvalue
 
-echo $variable
-echo $variable1
-echo $ceiling
+randomassign $v0<-(0,$ceiling)
+mathassign $v1<-$v0 - $subvalue
 
-if $variable1 > $variable [
-echo Var1 is greater than Var0
+echo V0 $v0
+echo V1 $v1
+echo CL $ceiling
+
+exprassign $operator<-<=
+
+if $v1 $operator $v0 (
+echo $v1 VAR1 is less than than $v0 VAR0
 jump BREAK
-endif ]
+endif )
 
 jump START
 

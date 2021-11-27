@@ -48,6 +48,11 @@ while not terminated:
         except:
             die('Illegal variable value in constassign')
 
+    if command == 'exprassign':
+        name = params.split('<-')[0]
+        varlist[name] = str(params.split('<-')[1])
+        print(f'vb: ExprAssigned "{params.split("<-")[1]}"->{name}')
+
     if command == 'randomassign':
         name = params.split('<-')[0]
         val = batchreplace( batchreplace(params.split('<-')[1], varlist), toreplace)
@@ -63,13 +68,19 @@ while not terminated:
     if command == 'mathassign':
         name = params.split('<-')[0]
         val = batchreplace(params.split('<-')[1], varlist)
+        #print(val)
+        #val = params
+        #print(vals)
         
         try: final = eval(val)
         except: die('Invalid mathmatical expression in mathassign')
 
+
         print(f'vb: Assigned {final}->{name} from {val}')
+        varlist[name] = final
 
     if command == 'jump':
+        params = batchreplace(params, varlist)
         newticker = pieces.index(f'@ {params}')
         if newticker == -1: die('No such symbolic jump destination in jump')
         print(f'vb: Moving program counter from {ticker} to {newticker}')
@@ -79,6 +90,7 @@ while not terminated:
         #****empty lines do count as instructions (although the interpreter does not act on them)
 
     if command == 'litjump':
+        params = batchreplace(params, varlist)
         try: newticker = int(params)
         except: die('Invalid instruction address in litjump')
 
@@ -90,6 +102,7 @@ while not terminated:
         terminated = True
 
     if command == 'delay':
+        params = batchreplace(params, varlist)
         params = params.split(' ')
         try: deltime = int(params[0])
         except: die('Invalid delay time in delay')
@@ -106,12 +119,48 @@ while not terminated:
         except: die('Undefined variable in varcopy')
         varlist[name] = donor
         print(f'vb: Copied {params.split("<-")[1]} ({donor})->{name}')
+
+    if command == 'debug':
+        print('db Varpool: ' + str(varlist).replace(',', '\n'))
+        print('db Instructionpool: ' + str(pieces).replace(',', '\n'))
+
+
+    if command == 'if':
+        params = batchreplace(params, varlist)
+        statement_bool = eval(batchreplace(params, toreplace))
+        #print(statement_bool)
+
+        splicedarray = pieces[ticker-1:]
+        endpoint = None
+        for i in splicedarray:
+            if 'endif' in i: endpoint = pieces.index(i, ticker-1)
+
+        if endpoint == None:
+            die('No End of If (EOI) in if')
+
+
+        if statement_bool: print(f'vb: Statement evaluated to {statement_bool}, NO JUMP MADE (supposed jump address = {endpoint})')
+        if not statement_bool:
+            print(f'vb: Statement evaluated to {statement_bool}, JUMP MADE,jump address = {endpoint}')
+            ticker = endpoint
+            moveup1 = False
+
+    if command == 'inpassign' or command == 'inputassign':
+        x = input('int-> ')
+        try: x = int(x)
+        except: die('Noninteger user input')
+
+        varlist[params] = x
+
+    if command == 'str.inpassign' or command == 'str.inputassign':
+        x = input('str-> ')
+        varlist[params] = x
+
         
 
 
     #advance the program ticker
     if moveup1: ticker = ticker + 1
 
-exit()
 
     
