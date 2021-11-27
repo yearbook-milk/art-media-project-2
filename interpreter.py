@@ -148,13 +148,29 @@ while not terminated:
     if command == 'inpassign' or command == 'inputassign':
         x = input('int-> ')
         try: x = int(x)
-        except: die('Noninteger user input')
+        except: die('Noninteger user input in inpassign')
 
         varlist[params] = x
 
     if command == 'str.inpassign' or command == 'str.inputassign':
         x = input('str-> ')
         varlist[params] = x
+
+    if command == 'import':
+        try:
+            f = open(params)
+            c = f.read()
+            f.close()
+        except:
+            die(f'FileIO error in reading file {params} in import')
+
+        tobeinserted = c.split('\n')
+        tobeinserted.reverse()
+        for i in tobeinserted:
+            pieces.insert(ticker+1, str(i))
+
+        #print(str(pieces).replace(',','\n'))
+        #input('Any key to continue')
 
         
 
