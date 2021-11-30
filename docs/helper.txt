@@ -1,0 +1,47 @@
+---FLOW, CONDITIONAL, GENERAL COMMANDS
+
+COMMAND          PARAMETERS             : PURPOSE/EFFECT
+echo             literal $varname       : prints out a statement (varfill enabled)
+constassign      $varname<-integer      : assigns integer value to $varname
+exprassign       $varname<-string       : assigns string value to $varname
+randomassign     $varname<-(flr,ceil)   : assigns random int value in domain [flr,ceil] to $varname
+mathassign       $varname<-1 + 1        : assigns the value of a math statement (varfill enabled) to $varname
+varcopy          $copy<-$donor          : copies int of $donor to $copy
+@                Label                  : creates a label that can be jumped to (flow structure)
+jump             Label                  : moves the program counter to the position of @ Label instruction
+litjump          $varname               : moves the program counter to a certain integer (fixed) (varfill enabled)
+exit             Exit Message           : exits the program forcefully, with message      
+inpassign        $varname               : asks for an int input and assigns it to $varname
+str.inpassign    $varname               : asks for a string input and assigns it to $varname
+import           Scriptname.pcs         : loads instructions from Scriptname.pcs into instruction array at current index (varfill enabled)
+
+---IF STATEMENT EXAMPLE
+
+if $v1 > $ $v2 (
+echo $v1 is bigger than $v2!!
+endif )
+
+> varfill enabled
+> uses Python syntax for t/f expressions (you can use the words or, and, etc.)
+
+---SERIAL COMMANDS
+
+-------------------------
+# OPENSERIAL (all params required)
+openserial baud=9600;handlename=$handle;port=COM2;
+openserial baud=<BAUD>;handlename=<NAME>;port=<PATH*>
+
+*: depends on operating system
+
+Creates a new serial object which can then be written to and deleted. Addressable through the $handle.
+--------------------------
+# TERMINATESERIAL
+terminateserial $handle
+
+Deletes a serial object ($handle remains in memory).
+--------------------------
+# COMCMD
+comcmd $handle<-$content
+
+Writes the bytes (ASCII only) to $handle.
+--------------------------
