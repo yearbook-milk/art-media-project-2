@@ -1,0 +1,36 @@
+remark     ####SET PORT TO COM3
+exprassign $to_open<-COM3
+
+remark     ####SET CONSTANTS FOR PINS
+exprassign -RED<-I
+exprassign -WHITE<-J
+exprassign -LED<-P
+exprassign ON<-A
+exprassign OFF<-B
+exprassign [<-C
+exprassign ]<-C
+
+remark     ####OPEN PORT
+openserial port=$to_open;baud=9600;hn=$C3;
+delay 3 s
+
+remark    ####SELF TEST
+constassign $ticker<-0
+
+@ Loop1
+comcmd $C3<-[ON-LED]
+delay 100 ms
+comcmd $C3<-[OFF-LED]
+delay 100 ms
+mathassign $ticker<-$ticker + 1
+
+if $ticker > 9 (
+jump BreakLoop1
+endif )
+
+jump Loop1
+
+
+@ BreakLoop1
+
+echo A new serial handle is available using $C3, bound to $to_open. Returning control to the main program.
