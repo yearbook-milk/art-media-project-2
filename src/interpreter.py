@@ -107,12 +107,17 @@ while not terminated:
         params = params.split(' ')
         try: deltime = int(params[0])
         except: die('Invalid delay time in delay')
-        if params[1] == 's':
-            print(f'vb: Delaying {deltime} seconds')
+        try:
+            if params[1] == 's':
+                print(f'vb: Delaying {deltime} seconds')
+                time.sleep(deltime)
+            if params[1] == 'ms':
+                print(f'vb: Delaying {deltime} miliseconds')
+                time.sleep(deltime/1000)
+        except:
+            print(f'vb: Delaying {deltime} seconds (fallback)')
             time.sleep(deltime)
-        if params[1] == 'ms':
-            print(f'vb: Delaying {deltime} miliseconds')
-            time.sleep(deltime/1000)
+                
 
     if command == 'varcopy':
         name = params.split('<-')[0]
@@ -174,10 +179,12 @@ while not terminated:
         params = batchreplace(batchreplace(params,varlist), toreplace).split(';')
         sethandle = False
         serialhandle = None
+        timeout = None
         for i in params:
             iss = i.split('=')
             if iss[0] == 'handlename' or iss[0] == 'hn':
                 serialhandles[iss[1]] = serial.Serial()
+                serialhandles[iss[1]].timeout = timeout
                 sethandle = True
                 serialhandle = iss[1]
 
@@ -190,6 +197,13 @@ while not terminated:
                     serialhandles[serialhandle].baudrate = int(iss[1])
                     print(f'vb: Assigned {serialhandle} baudrate to {iss[1]}')
                 except: die('Non-integer baud rate in openserial')
+                
+            if iss[0] == 'timeout':
+                try:
+                    serialhandles[serialhandle].timeout = int(iss[1])
+                    print(f'vb: Assigned {serialhandle} timeout to {iss[1]}')
+                except: die('Non-integer timeout in openserial')
+             
             if iss[0] == 'port':
                 serialhandles[serialhandle].port = str(iss[1])
                 print(f'vb: Assigned {serialhandle} port to {iss[1]}')
