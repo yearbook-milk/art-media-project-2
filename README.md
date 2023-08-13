@@ -1,3 +1,1 @@
-# art-media-project-2
-i learned my lesson and am backing up what i can for my art project on github
-this file only exists because git wants head (main)
+Ported over because I want some copies of my old repos that aren't too embarassing
